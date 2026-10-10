@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Cypress artifacts
+frontend/cypress/videos/
+frontend/cypress/screenshots/
+frontend/cypress/downloads/
+
+# Logs & OS / editor files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

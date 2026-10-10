@@ -1,0 +1,25 @@
+{
+  "name": "spotify-diary-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Spotify Diary API (Express)",
+  "type": "module",
+  "main": "src/server.ts",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.ts",
+    "dev": "node --watch src/server.ts",
+    "typecheck": "tsc",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.19.2",
+    "typescript": "^7.0.2"
+  }
+}
