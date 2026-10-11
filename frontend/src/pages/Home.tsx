@@ -8,7 +8,14 @@ import Typography from '@mui/material/Typography';
 import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 import { sunsetGradient } from '../theme.ts';
 
-export default function Home({ children }: { children?: ReactNode }) {
+interface HomeProps {
+  /** Shown above the diary, e.g. the signed-in user's profile. */
+  children?: ReactNode;
+  /** Replaces the "Your diary" teaser, e.g. with the signed-in user's listening history. */
+  diary?: ReactNode;
+}
+
+export default function Home({ children, diary }: HomeProps) {
   return (
     <Container component="main" maxWidth="md" sx={{ py: { xs: 4, sm: 6 } }}>
       <Box component="header" sx={{ mb: 4 }}>
@@ -31,36 +38,43 @@ export default function Home({ children }: { children?: ReactNode }) {
       <Stack spacing={3}>
         {children}
 
-        <Card component="section">
-          <CardContent>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-              <Box
-                aria-hidden
-                sx={{
-                  display: 'grid',
-                  flexShrink: 0,
-                  placeItems: 'center',
-                  width: 48,
-                  height: 48,
-                  borderRadius: 3,
-                  color: 'primary.main',
-                  backgroundColor: 'rgba(242, 165, 65, 0.18)',
-                }}
-              >
-                <AutoStoriesRoundedIcon />
-              </Box>
-              <Box>
-                <Typography variant="h2" sx={{ mb: 0.5 }}>
-                  Your diary
-                </Typography>
-                <Typography color="text.secondary">
-                  Your recent tracks, favourite artists and listening moments will appear here soon.
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
-        </Card>
+        {diary ?? <DiaryTeaser />}
       </Stack>
     </Container>
+  );
+}
+
+/** What visitors see before they sign in. */
+function DiaryTeaser() {
+  return (
+    <Card component="section">
+      <CardContent>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
+          <Box
+            aria-hidden
+            sx={{
+              display: 'grid',
+              flexShrink: 0,
+              placeItems: 'center',
+              width: 48,
+              height: 48,
+              borderRadius: 3,
+              color: 'primary.main',
+              backgroundColor: 'rgba(242, 165, 65, 0.18)',
+            }}
+          >
+            <AutoStoriesRoundedIcon />
+          </Box>
+          <Box>
+            <Typography variant="h2" sx={{ mb: 0.5 }}>
+              Your diary
+            </Typography>
+            <Typography color="text.secondary">
+              Your recent tracks, favourite artists and listening moments will appear here soon.
+            </Typography>
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }

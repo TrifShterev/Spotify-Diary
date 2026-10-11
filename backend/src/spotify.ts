@@ -23,6 +23,25 @@ export class SpotifyApiError extends Error {
   }
 }
 
+/** Spotify refused the request because the user hasn't granted a scope it needs. */
+export class SpotifyScopeMissingError extends Error {
+  constructor(scope: string) {
+    super(`Spotify scope ${scope} is not granted`);
+    this.name = 'SpotifyScopeMissingError';
+  }
+}
+
+/**
+ * Whether Spotify refused the request for a missing scope. It answers 403, or 401 with
+ * the message "Permissions missing" (seen on /me/player/currently-playing).
+ */
+export function isSpotifyScopeMissing(err: unknown): err is SpotifyApiError {
+  if (!(err instanceof SpotifyApiError)) return false;
+  if (err.status === 403) return true;
+  const body = err.body as { error?: { message?: unknown } } | null;
+  return err.status === 401 && body?.error?.message === 'Permissions missing';
+}
+
 /**
  * Returns the user's Spotify OAuth access token. Clerk stores the token from the
  * Spotify sign-in and refreshes it when it expires, so always fetch a fresh one per request.

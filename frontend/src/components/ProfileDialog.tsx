@@ -1,5 +1,4 @@
 import { useState, type ReactNode } from 'react';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -20,7 +19,6 @@ import { useTheme } from '@mui/material/styles';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
-import LockOpenRoundedIcon from '@mui/icons-material/LockOpenRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MailRoundedIcon from '@mui/icons-material/MailRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
@@ -29,6 +27,7 @@ import TagRoundedIcon from '@mui/icons-material/TagRounded';
 import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
 import type { MeResponse } from '../api.ts';
 import { sunsetGradient } from '../theme.ts';
+import AllowScopesPrompt from './AllowScopesPrompt.tsx';
 import ProfileAvatar from './ProfileAvatar.tsx';
 import { formatCountry, formatFollowers, formatPlan } from './profileFormat.ts';
 
@@ -121,7 +120,14 @@ export default function ProfileDialog({ me, open, onClose, onShareMoreDetails }:
       <Divider sx={{ mx: 3, mt: 2 }} />
 
       <DialogContent sx={{ py: 1 }}>
-        {onShareMoreDetails && <ShareMoreDetailsPrompt onShare={onShareMoreDetails} />}
+        {onShareMoreDetails && (
+          <AllowScopesPrompt
+            message="Allow Spotify Diary to show your country and Spotify plan."
+            onAllow={onShareMoreDetails}
+            sx={{ mt: 1 }}
+            data-cy="share-more-details"
+          />
+        )}
         <List dense disablePadding>
           {details.map((detail) => (
             <ListItem key={detail.label} disableGutters secondaryAction={detail.action}>
@@ -154,39 +160,6 @@ export default function ProfileDialog({ me, open, onClose, onShareMoreDetails }:
         )}
       </DialogActions>
     </Dialog>
-  );
-}
-
-function ShareMoreDetailsPrompt({ onShare }: { onShare: () => Promise<void> }) {
-  const [status, setStatus] = useState<'idle' | 'sharing' | 'failed'>('idle');
-
-  // On success the browser leaves for Spotify's consent page, so only a failure needs handling here.
-  const share = () => {
-    setStatus('sharing');
-    onShare().catch(() => setStatus('failed'));
-  };
-
-  return (
-    <Alert
-      icon={<LockOpenRoundedIcon />}
-      action={
-        <Button color="primary" size="small" loading={status === 'sharing'} onClick={share}>
-          Allow
-        </Button>
-      }
-      sx={{
-        mt: 1,
-        alignItems: 'center',
-        color: 'text.primary',
-        backgroundColor: 'rgba(242, 165, 65, 0.16)',
-        '& .MuiAlert-icon': { color: 'primary.main' },
-      }}
-      data-cy="share-more-details"
-    >
-      {status === 'failed'
-        ? "We couldn't reach Spotify. Please try again."
-        : 'Allow Spotify Diary to show your country and Spotify plan.'}
-    </Alert>
   );
 }
 

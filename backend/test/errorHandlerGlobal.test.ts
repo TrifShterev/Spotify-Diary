@@ -4,7 +4,7 @@ import type { Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import express from 'express';
 import { UnauthenticatedError, errorHandlerGlobal } from '../src/errorHandlerGlobal.ts';
-import { SpotifyApiError, SpotifyNotConnectedError } from '../src/spotify.ts';
+import { SpotifyApiError, SpotifyNotConnectedError, SpotifyScopeMissingError } from '../src/spotify.ts';
 
 describe('errorHandlerGlobal', () => {
   let server: Server;
@@ -17,6 +17,9 @@ describe('errorHandlerGlobal', () => {
     });
     app.get('/not-connected', async () => {
       throw new SpotifyNotConnectedError('user_123');
+    });
+    app.get('/scope-missing', async () => {
+      throw new SpotifyScopeMissingError('user-read-recently-played');
     });
     app.get('/spotify-error', async () => {
       throw new SpotifyApiError(429, { error: 'rate limited' });
@@ -40,6 +43,7 @@ describe('errorHandlerGlobal', () => {
   const cases = [
     { path: '/unauthenticated', status: 401, body: { error: 'unauthenticated' } },
     { path: '/not-connected', status: 403, body: { error: 'spotify_not_connected' } },
+    { path: '/scope-missing', status: 403, body: { error: 'spotify_scope_missing' } },
     { path: '/spotify-error', status: 502, body: { error: 'spotify_error', status: 429 } },
     { path: '/unexpected', status: 500, body: { error: 'internal_error' } },
   ];

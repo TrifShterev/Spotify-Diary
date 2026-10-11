@@ -13,6 +13,9 @@ export default defineConfig({
     devServer: {
       framework: 'react',
       bundler: 'vite',
+      // Cypress runs its own Vite server. With a separate dependency cache it can't rewrite
+      // node_modules/.vite under a running `npm run dev`, which leaves the app blank.
+      viteConfig: { cacheDir: 'node_modules/.vite-cypress' },
     },
     setupNodeEvents(on, config) {
       initVisualRegressionPlugin(on, config);

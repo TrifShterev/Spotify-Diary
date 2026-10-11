@@ -1,5 +1,5 @@
 import type { ErrorRequestHandler } from 'express';
-import { SpotifyApiError, SpotifyNotConnectedError } from './spotify.ts';
+import { SpotifyApiError, SpotifyNotConnectedError, SpotifyScopeMissingError } from './spotify.ts';
 
 /** The request has no valid Clerk session. */
 export class UnauthenticatedError extends Error {
@@ -25,6 +25,10 @@ export const errorHandlerGlobal: ErrorRequestHandler = (err, _req, res, next) =>
   }
   if (err instanceof SpotifyNotConnectedError) {
     res.status(403).json({ error: 'spotify_not_connected' });
+    return;
+  }
+  if (err instanceof SpotifyScopeMissingError) {
+    res.status(403).json({ error: 'spotify_scope_missing' });
     return;
   }
   if (err instanceof SpotifyApiError) {
