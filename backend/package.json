@@ -9,12 +9,13 @@
     "node": ">=24"
   },
   "scripts": {
-    "start": "node src/server.ts",
-    "dev": "node --watch src/server.ts",
+    "start": "node --env-file-if-exists=.env.local src/server.ts",
+    "dev": "node --env-file-if-exists=.env.local --watch src/server.ts",
     "typecheck": "tsc",
-    "test": "node --test \"test/**/*.test.ts\""
+    "test": "node --env-file-if-exists=.env.local --test \"test/**/*.test.ts\""
   },
   "dependencies": {
+    "@clerk/express": "^2.1.78",
     "express": "^5.3.0"
   },
   "devDependencies": {

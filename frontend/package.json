@@ -13,6 +13,7 @@
     "cy:run:component": "cypress run --component"
   },
   "dependencies": {
+    "@clerk/react": "^6.17.8",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

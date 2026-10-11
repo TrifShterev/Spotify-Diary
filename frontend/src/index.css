@@ -48,3 +48,82 @@ body {
 .card h2 {
   margin-top: 0;
 }
+
+.auth-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.auth-bar__brand {
+  font-weight: 700;
+}
+
+.button {
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button--primary {
+  color: #000;
+  background-color: var(--accent);
+}
+
+.button--primary:hover {
+  filter: brightness(1.1);
+}
+
+.card--error {
+  color: #ffb4b4;
+}
+
+.current-user {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.current-user__avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.current-user__details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.current-user__details dt {
+  color: var(--muted);
+}
+
+.current-user__details dd {
+  margin: 0;
+}
+
+.current-user__plan {
+  text-transform: capitalize;
+}
+
+.current-user a {
+  color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .current-user {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

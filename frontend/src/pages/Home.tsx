@@ -1,10 +1,14 @@
-export default function Home() {
+import type { ReactNode } from 'react';
+
+export default function Home({ children }: { children?: ReactNode }) {
   return (
     <main className="home">
       <header>
         <h1>Spotify Diary</h1>
         <p className="tagline">Explore and reflect on your Spotify listening habits.</p>
       </header>
+
+      {children}
 
       <section className="card">
         <h2>Your diary</h2>
