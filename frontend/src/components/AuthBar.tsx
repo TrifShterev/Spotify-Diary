@@ -1,6 +1,7 @@
 import { Show, SignInButton, UserButton } from '@clerk/react';
 import Button from '@mui/material/Button';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
+import { SPOTIFY_PROFILE_SCOPES } from '../hooks/useSpotifyScopes.ts';
 import AppHeader from './AppHeader.tsx';
 
 export default function AuthBar() {
@@ -14,7 +15,8 @@ export default function AuthBar() {
         </SignInButton>
       </Show>
       <Show when="signed-in">
-        <UserButton />
+        {/* "Manage account" offers to reconnect Spotify when these scopes are missing. */}
+        <UserButton userProfileProps={{ additionalOAuthScopes: { spotify: SPOTIFY_PROFILE_SCOPES } }} />
       </Show>
     </AppHeader>
   );

@@ -38,6 +38,17 @@ describe('<CurrentUser />', () => {
       cy.get('[role="dialog"]').should('not.exist');
     });
 
+    it('Spotify did not share country and plan → the profile dialog offers to ask for them', () => {
+      const onShare = cy.stub().as('onShare').resolves();
+      cy.mount(<CurrentUser onShareMoreDetails={onShare} />);
+      cy.wait('@me');
+
+      cy.get('[data-cy="my-profile-button"]').click();
+      cy.contains('[data-cy="share-more-details"] button', 'Allow').click();
+
+      cy.get('@onShare').should('have.been.calledOnce');
+    });
+
     it('matches the visual baseline', () => {
       cy.viewport(800, 400);
       cy.mount(<CurrentUser />);

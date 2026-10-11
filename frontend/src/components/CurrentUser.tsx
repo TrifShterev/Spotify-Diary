@@ -31,7 +31,12 @@ const ERROR_MESSAGES: Record<number, string> = {
 
 const AVATAR_SIZE = 88;
 
-export default function CurrentUser() {
+interface CurrentUserProps {
+  /** Set when Spotify hasn't shared the user's country and plan yet. Asks Spotify for them. */
+  onShareMoreDetails?: () => Promise<void>;
+}
+
+export default function CurrentUser({ onShareMoreDetails }: CurrentUserProps) {
   const [state, setState] = useState<State>({ status: 'loading' });
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -125,7 +130,12 @@ export default function CurrentUser() {
         </Stack>
       </CardContent>
 
-      <ProfileDialog me={me} open={profileOpen} onClose={() => setProfileOpen(false)} />
+      <ProfileDialog
+        me={me}
+        open={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        onShareMoreDetails={onShareMoreDetails}
+      />
     </Card>
   );
 }

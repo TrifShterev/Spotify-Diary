@@ -44,7 +44,10 @@ npm run cy:snapshots:update -- --spec <spec>  # re-baseline failing image snapsh
 npm run cy:snapshots:clean       # delete baseline images no test uses anymore
 ```
 
-Component tests live next to the components as `*.cy.tsx` files.
+The UI is built with [MUI](https://mui.com) and the Nunito font (`@fontsource/nunito`, bundled, so no network fonts).
+Colours, typography and component defaults live in one theme, `src/theme.ts`, applied by `src/components/AppThemeProvider.tsx`; Clerk's sign-in UI reuses its colours (see `src/main.tsx`).
+
+Component tests live next to the components as `*.cy.tsx` files. `cy.mount()` wraps every component in `AppThemeProvider`.
 Significant visual changes are covered by image snapshots (`cy.matchImage()` from [`@pixsame/cypress-plugin-visual-regression-diff`](https://github.com/pixsame/pixsame)).
 Baselines are committed in `__image_snapshots__/` next to each spec. See `.claude/skills/visual-regression-tests/SKILL.md` for the rules.
 
@@ -53,6 +56,9 @@ Environment (`frontend/.env.local`): `VITE_CLERK_PUBLISHABLE_KEY`.
 ## Authentication
 
 Users sign in with their Spotify account through [Clerk](https://clerk.com) (Spotify SSO is enabled in the Clerk dashboard).
+The Spotify connection needs the scopes `user-read-email` and `user-read-private`; without `user-read-private`, Spotify leaves the user's country and plan out of their profile.
+Set both under **SSO connections → Spotify → Scopes** in the Clerk dashboard (this requires custom Spotify credentials).
+Users who connected with fewer scopes get an **Allow** prompt in the *My profile* dialog (and a reconnect option under *Manage account*) that sends them to Spotify to approve the missing scope (see `src/hooks/useSpotifyScopes.ts`).
 The SPA and the API share one origin: Vite proxies `/api/*` to the backend, so Clerk's session cookie travels with every API request and no CORS or bearer tokens are needed.
 On the backend, `clerkMiddleware` validates the session for `/api` routes, and `backend/src/spotify.ts` gets the user's Spotify access token from Clerk to call the Spotify Web API.
 In production, serve the frontend and the API from the same origin as well (for example behind one reverse proxy).

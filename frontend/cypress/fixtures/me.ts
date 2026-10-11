@@ -32,3 +32,9 @@ export const minimalMeResponse: MeResponse = {
     followers: null,
   },
 };
+
+/** What `GET /api/me` returns without the `user-read-private` scope: Spotify leaves out country and plan. */
+export const withoutPrivateScopeMeResponse: MeResponse = {
+  ...meResponse,
+  spotify: { ...meResponse.spotify, country: null, product: null },
+};
