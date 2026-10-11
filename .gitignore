@@ -21,3 +21,7 @@ frontend/cypress/downloads/
 Thumbs.db
 .vscode/
 .idea/
+
+# Visual regression: only baselines are committed, not the per-run actual/diff images
+**/__image_snapshots__/*.actual.png
+**/__image_snapshots__/*.diff.png

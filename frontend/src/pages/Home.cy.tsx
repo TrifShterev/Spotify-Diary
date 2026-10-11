@@ -13,4 +13,10 @@ describe('<Home />', () => {
 
     cy.contains('h2', 'Your diary').should('be.visible');
   });
+
+  it('matches the visual baseline', () => {
+    cy.mount(<Home />);
+
+    cy.get('main').matchImage();
+  });
 });

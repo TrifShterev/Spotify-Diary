@@ -10,14 +10,23 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "cy:open": "cypress open --component",
-    "cy:run:component": "cypress run --component"
+    "cy:run:component": "cypress run --component",
+    "cy:run:component:strict": "cypress run --component --expose pluginVisualRegressionCreateMissingImages=false",
+    "cy:snapshots:update": "cypress run --component --expose pluginVisualRegressionUpdateImages=failures-only",
+    "cy:snapshots:clean": "cypress run --component --expose pluginVisualRegressionCleanupUnusedImages=true"
   },
   "dependencies": {
     "@clerk/react": "^6.17.8",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/nunito": "^5.3.0",
+    "@mui/icons-material": "^9.5.0",
+    "@mui/material": "^9.5.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@pixsame/cypress-plugin-visual-regression-diff": "^1.0.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
@@ -27,5 +36,8 @@
   },
   "allowScripts": {
     "cypress@16.1.1": true
+  },
+  "overrides": {
+    "sharp": "0.35.5"
   }
 }

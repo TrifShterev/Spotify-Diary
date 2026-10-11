@@ -37,11 +37,16 @@ npm install
 npm run dev               # Vite dev server
 npm run build             # type-check + production build into dist/
 npm run preview           # serve the production build
-npm run cy:open           # Cypress component tests (interactive)
-npm run cy:run:component  # Cypress component tests (headless)
+npm run cy:open                  # Cypress component tests (interactive)
+npm run cy:run:component         # Cypress component tests (headless)
+npm run cy:run:component:strict  # same, but fails when a baseline image is missing
+npm run cy:snapshots:update -- --spec <spec>  # re-baseline failing image snapshots of a spec
+npm run cy:snapshots:clean       # delete baseline images no test uses anymore
 ```
 
 Component tests live next to the components as `*.cy.tsx` files.
+Significant visual changes are covered by image snapshots (`cy.matchImage()` from [`@pixsame/cypress-plugin-visual-regression-diff`](https://github.com/pixsame/pixsame)).
+Baselines are committed in `__image_snapshots__/` next to each spec. See `.claude/skills/visual-regression-tests/SKILL.md` for the rules.
 
 Environment (`frontend/.env.local`): `VITE_CLERK_PUBLISHABLE_KEY`.
 

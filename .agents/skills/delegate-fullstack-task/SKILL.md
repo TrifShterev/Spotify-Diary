@@ -151,7 +151,8 @@ Side-specific rules for the **frontend** sub-agent:
 - The backend part may not exist yet while you work. Code against the contract, not against a running server. Declare frontend response types that match the contract types.
 - Call `/api/...` same-origin with `fetch`, like `frontend/src/components/CurrentUser.tsx`. Handle the loading, error, and ready states, and map every error status in the contract to a user-facing message.
 - Add Cypress component tests next to the components as `*.cy.tsx`. Stub the API with `cy.intercept` using payloads from the contract, including the error statuses. Use the `cypress-author` skill.
-- Verify with `npm run typecheck` and `npm run cy:run:component` in `frontend/`.
+- Cover every significant visual change with image snapshots, following the `visual-regression-tests` skill. New and updated baseline images are part of the deliverable.
+- Verify with `npm run typecheck` and `npm run cy:run:component:strict` in `frontend/`.
 
 After spawning, tell the user both sub-agents are running and what each one owns. Then wait for their completion notifications. Don't poll, and don't predict their results.
 
@@ -173,7 +174,7 @@ After both sub-agents report:
 2. Check conformance yourself instead of trusting the reports. Compare the backend handler's response fields, status codes, and error codes with the frontend types and error handling, field by field, against the plan.
 3. Run every check:
    - In `backend/`: `npm run typecheck` and `npm test`
-   - In `frontend/`: `npm run typecheck` and `npm run cy:run:component`
+   - In `frontend/`: `npm run typecheck` and `npm run cy:run:component:strict`
 4. Fix small integration mismatches yourself. Send larger ones back to the owning sub-agent with SendMessage.
 5. Update `README.md` with new endpoints, env vars, or scripts.
 
