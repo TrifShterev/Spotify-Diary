@@ -34,11 +34,11 @@ Environment (`backend/.env.local`, loaded automatically by the npm scripts):
 ```bash
 cd frontend
 npm install
-npm run dev             # Vite dev server
-npm run build           # type-check + production build into dist/
-npm run preview         # serve the production build
-npm run cy:open         # Cypress component tests (interactive)
-npm run test:component  # Cypress component tests (headless)
+npm run dev               # Vite dev server
+npm run build             # type-check + production build into dist/
+npm run preview           # serve the production build
+npm run cy:open           # Cypress component tests (interactive)
+npm run cy:run:component  # Cypress component tests (headless)
 ```
 
 Component tests live next to the components as `*.cy.tsx` files.
