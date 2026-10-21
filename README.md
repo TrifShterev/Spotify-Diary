@@ -61,17 +61,7 @@ npm run typecheck  # tsc --noEmit
 npm test           # node:test suite
 ```
 
-Endpoints:
-
-- `GET /healthcheck` returns `{ "status": "ok", "uptime": <seconds>, "timestamp": "<ISO date>" }`
-- `GET /api/me` (requires a Clerk session) returns the Clerk `userId` and the user's Spotify profile, fetched from the Spotify Web API with the access token Clerk stores for the user's Spotify account. Responds `401` without a session, `403` if no Spotify account is connected, `502` if Spotify fails.
-- `GET /api/recently-played` (requires a Clerk session) returns the user's last 50 plays from Spotify, in Spotify's order: `{ "items": [{ "playedAt", "name", "artists", "album": { "name", "imageUrl" }, "durationMs" }] }`.
-  Responds like `/api/me` on errors, plus `403 { "error": "spotify_scope_missing" }` when the user hasn't granted `user-read-recently-played`.
-- `GET /api/currently-playing` (requires a Clerk session) returns the track playing right now: `{ "nowPlaying": { ...the fields of a play, "isPlaying" } | null }`.
-  `playedAt` is the estimated start of the play. `nowPlaying` is `null` when nothing is playing, or for podcast episodes and ads. Errors as for `/api/recently-played`, with `user-read-currently-playing` as the scope.
-  Spotify adds a play to its history only after it ends, so the track playing now comes from here.
-
-The home page shows both as a diary: a **Today** section first (the track playing now, then today's plays), then one section per earlier day, newest first, in the user's time zone (`frontend/src/components/ListeningHistory.tsx`, one `TrackItem.tsx` per play).
+The home page shows the current and recent plays as a diary: a **Today** section first (the track playing now, then today's plays), then one section per earlier day, newest first, in the user's time zone (`frontend/src/components/ListeningHistory.tsx`, one `TrackItem.tsx` per play).
 
 Environment (`backend/.env.local`, loaded automatically by the npm scripts):
 
