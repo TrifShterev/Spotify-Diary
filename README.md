@@ -2,6 +2,49 @@
 
 A personal music diary that helps you explore and reflect on your Spotify listening habits.
 
+## Goal
+
+Spotify shows what you are playing, but it has no good way to look back. Spotify Diary turns your listening history into a day-by-day diary:
+what you listen to right now, what you played today, and what you played on each earlier day.
+
+## Characteristics
+
+- **Sign in with Spotify**: authentication is handled by [Clerk](https://clerk.com); no separate account or password is needed.
+- **Diary view**: a **Today** section (the track playing now, then today's plays) followed by one section per earlier day, newest first, in your time zone.
+- **Read-only**: the app only reads your profile and listening history; it never changes anything in your Spotify account.
+- **Stores nothing**: there is no database. Every request is answered live from the Spotify Web API.
+- **Scope-aware**: when a Spotify permission is missing, the app asks you to grant it instead of failing.
+- **Tested**: the API has a `node:test` suite; the UI has Cypress component tests with image snapshots.
+
+## Implementation
+
+| Part | Stack |
+| --- | --- |
+| `frontend/` | React 19 SPA, Vite, MUI, TypeScript, Clerk React SDK, Cypress component tests |
+| `backend/` | Express 5, TypeScript (run directly by Node), Clerk Express SDK, `node:test` |
+
+How it works:
+
+1. The user signs in with Spotify through Clerk in the SPA.
+2. The SPA calls the backend under `/api`; Vite proxies these calls, so Clerk's session cookie is sent with each one.
+3. The backend validates the session with `clerkMiddleware`, asks Clerk for the user's Spotify access token, and calls the Spotify Web API (`backend/src/spotify.ts`).
+4. The backend maps Spotify's responses to small JSON shapes (`recentlyPlayed.ts`, `currentlyPlaying.ts`), and the SPA groups them by day and renders them (`ListeningHistory.tsx`).
+
+Layout:
+
+```text
+backend/src/       Express app, routes (routes/api.ts), Spotify client, error handler
+backend/test/      API tests
+frontend/src/      components/, pages/, hooks/, theme.ts, api.ts, main.tsx
+frontend/cypress/  Cypress config, fixtures and support files
+```
+
+## Getting started
+
+1. Create a Clerk application with Spotify SSO enabled (see [Authentication](#authentication)).
+2. Put the keys in `backend/.env.local` and `frontend/.env.local` (see below).
+3. Start the backend and the frontend in two terminals, then open http://localhost:8080.
+
 The project is a React SPA (`frontend/`) plus an Express API (`backend/`). Both are written in TypeScript.
 Each part has its own `package.json` and `node_modules`, so install and run them separately.
 
@@ -18,17 +61,7 @@ npm run typecheck  # tsc --noEmit
 npm test           # node:test suite
 ```
 
-Endpoints:
-
-- `GET /healthcheck` returns `{ "status": "ok", "uptime": <seconds>, "timestamp": "<ISO date>" }`
-- `GET /api/me` (requires a Clerk session) returns the Clerk `userId` and the user's Spotify profile, fetched from the Spotify Web API with the access token Clerk stores for the user's Spotify account. Responds `401` without a session, `403` if no Spotify account is connected, `502` if Spotify fails.
-- `GET /api/recently-played` (requires a Clerk session) returns the user's last 50 plays from Spotify, in Spotify's order: `{ "items": [{ "playedAt", "name", "artists", "album": { "name", "imageUrl" }, "durationMs" }] }`.
-  Responds like `/api/me` on errors, plus `403 { "error": "spotify_scope_missing" }` when the user hasn't granted `user-read-recently-played`.
-- `GET /api/currently-playing` (requires a Clerk session) returns the track playing right now: `{ "nowPlaying": { ...the fields of a play, "isPlaying" } | null }`.
-  `playedAt` is the estimated start of the play. `nowPlaying` is `null` when nothing is playing, or for podcast episodes and ads. Errors as for `/api/recently-played`, with `user-read-currently-playing` as the scope.
-  Spotify adds a play to its history only after it ends, so the track playing now comes from here.
-
-The home page shows both as a diary: a **Today** section first (the track playing now, then today's plays), then one section per earlier day, newest first, in the user's time zone (`frontend/src/components/ListeningHistory.tsx`, one `TrackItem.tsx` per play).
+The home page shows the current and recent plays as a diary: a **Today** section first (the track playing now, then today's plays), then one section per earlier day, newest first, in the user's time zone (`frontend/src/components/ListeningHistory.tsx`, one `TrackItem.tsx` per play).
 
 Environment (`backend/.env.local`, loaded automatically by the npm scripts):
 
