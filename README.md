@@ -2,6 +2,49 @@
 
 A personal music diary that helps you explore and reflect on your Spotify listening habits.
 
+## Goal
+
+Spotify shows what you are playing, but it has no good way to look back. Spotify Diary turns your listening history into a day-by-day diary:
+what you listen to right now, what you played today, and what you played on each earlier day.
+
+## Characteristics
+
+- **Sign in with Spotify**: authentication is handled by [Clerk](https://clerk.com); no separate account or password is needed.
+- **Diary view**: a **Today** section (the track playing now, then today's plays) followed by one section per earlier day, newest first, in your time zone.
+- **Read-only**: the app only reads your profile and listening history; it never changes anything in your Spotify account.
+- **Stores nothing**: there is no database. Every request is answered live from the Spotify Web API.
+- **Scope-aware**: when a Spotify permission is missing, the app asks you to grant it instead of failing.
+- **Tested**: the API has a `node:test` suite; the UI has Cypress component tests with image snapshots.
+
+## Implementation
+
+| Part | Stack |
+| --- | --- |
+| `frontend/` | React 19 SPA, Vite, MUI, TypeScript, Clerk React SDK, Cypress component tests |
+| `backend/` | Express 5, TypeScript (run directly by Node), Clerk Express SDK, `node:test` |
+
+How it works:
+
+1. The user signs in with Spotify through Clerk in the SPA.
+2. The SPA calls the backend under `/api`; Vite proxies these calls, so Clerk's session cookie is sent with each one.
+3. The backend validates the session with `clerkMiddleware`, asks Clerk for the user's Spotify access token, and calls the Spotify Web API (`backend/src/spotify.ts`).
+4. The backend maps Spotify's responses to small JSON shapes (`recentlyPlayed.ts`, `currentlyPlaying.ts`), and the SPA groups them by day and renders them (`ListeningHistory.tsx`).
+
+Layout:
+
+```text
+backend/src/       Express app, routes (routes/api.ts), Spotify client, error handler
+backend/test/      API tests
+frontend/src/      components/, pages/, hooks/, theme.ts, api.ts, main.tsx
+frontend/cypress/  Cypress config, fixtures and support files
+```
+
+## Getting started
+
+1. Create a Clerk application with Spotify SSO enabled (see [Authentication](#authentication)).
+2. Put the keys in `backend/.env.local` and `frontend/.env.local` (see below).
+3. Start the backend and the frontend in two terminals, then open http://localhost:8080.
+
 The project is a React SPA (`frontend/`) plus an Express API (`backend/`). Both are written in TypeScript.
 Each part has its own `package.json` and `node_modules`, so install and run them separately.
 
